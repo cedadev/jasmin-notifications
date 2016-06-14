@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 
-from .models import Notification, UserNotification
+from .models import Notification, EmailNotification, UserNotification
 
 
 _log = logging.getLogger(__name__)
@@ -79,4 +79,5 @@ def delete_notifications(sender, instance, **kwargs):
     """
     When an object is deleted, remove any notifications for it.
     """
-    Notification.objects.filter_target(instance).delete()
+    EmailNotification.objects.filter_target(instance).delete()
+    UserNotification.objects.filter_target(instance).delete()
