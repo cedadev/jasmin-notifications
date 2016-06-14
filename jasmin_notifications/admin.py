@@ -36,7 +36,9 @@ class NotificationAdmin(PolymorphicParentModelAdmin):
 
     list_display = ('notification_type', 'level', 'email', 'uuid', 'followed_at', 'created_at')
     list_filter = ('notification_type', PolymorphicChildModelFilter)
-    search_fields = ('notification_type__name', 'EmailNotification__email', 'uuid', 'link', 'message')
+    search_fields = ('notification_type__name', 'uuid', 'link',
+                     'usernotification__user__username', 'usernotification__user__email',
+                     'emailnotification__email', )
 
     def email(self, obj):
         if hasattr(obj, 'email'):
