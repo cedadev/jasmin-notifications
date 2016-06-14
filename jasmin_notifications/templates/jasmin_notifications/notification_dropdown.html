@@ -1,0 +1,17 @@
+<li class="{% if notifications %}dropdown{% else %}disabled{% endif %}">
+    <a href="#" {% if notifications %}class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"{% endif %}>
+        <i class="fa fa-bell"></i> <span class="badge unread-count">{{ notifications|length }}</span>
+    </a>
+    {% if notifications %}
+        <ul class="disabled dropdown-menu notification-list">
+            <li class="notification-header"><i class="fa fa-bell"></i> Notifications</li>
+            {% for notification in notifications %}
+                <li class="notification notification-{{ notification.level }}">
+                    <a href="{{ notification.link }}">
+                        {% include "jasmin_notifications/messages/"|add:notification.type|add:".html" %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>
