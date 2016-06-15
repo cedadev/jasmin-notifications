@@ -108,16 +108,6 @@ class Notification(PolymorphicModel):
     #: Datetime at which the notification was followed
     followed_at = models.DateTimeField(null = True, blank = True)
 
-    @classmethod
-    def create(cls, notification_type, **kwargs):
-        """
-        Creates a new notification. ``notification_type`` can be given as a string
-        and will be converted.
-        """
-        if not isinstance(notification_type, NotificationType):
-            notification_type = NotificationType.objects.get(name = notification_type)
-        return cls.objects.create(notification_type = notification_type, **kwargs)
-
 class EmailNotification(Notification):
     """
     Model for notifications sent to an email address with no attached user.
