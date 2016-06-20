@@ -81,6 +81,11 @@ class NotificationQuerySet(PolymorphicQuerySet):
             notification_type = NotificationType.objects.get(name = notification_type)
         return self.filter(notification_type = notification_type)
 
+    def delete(self, *args, **kwargs):
+        # The default here raises an integrity error as the child entries are not
+        # removed first
+        for n in self: n.delete()
+
 
 class Notification(PolymorphicModel):
     """
