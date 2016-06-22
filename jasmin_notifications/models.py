@@ -15,6 +15,8 @@ from polymorphic.models import PolymorphicModel
 from polymorphic.manager import PolymorphicManager
 from polymorphic.query import PolymorphicQuerySet
 
+from picklefield.fields import PickledObjectField
+
 from jasmin_django_utils.enumfield import EnumField
 from jasmin_django_utils.crossdb import CrossDbGenericForeignKey
 
@@ -112,6 +114,8 @@ class Notification(PolymorphicModel):
     created_at = models.DateTimeField(auto_now_add = True)
     #: Datetime at which the notification was followed
     followed_at = models.DateTimeField(null = True, blank = True)
+    #: Any extra context for template rendering
+    extra_context = PickledObjectField(default = {})
 
 class EmailNotification(Notification):
     """

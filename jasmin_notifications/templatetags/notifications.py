@@ -9,6 +9,7 @@ from django import template
 from django.core.urlresolvers import reverse
 
 from ..models import UserNotification
+from ..helpers import notification_context
 
 
 register = template.Library()
@@ -21,8 +22,10 @@ def notification_dropdown(context):
     Renders the notifications for the logged in user as a Bootstrap dropdown for
     inclusion in a navbar.
 
-    Each notification is rendered using the template at
-    ``jasmin_notifications/messages/{type}.html with the current notification in scope.
+    The message for each notification is rendered using the template at
+    ``jasmin_notifications/messages/{type}.html with the current notification context
+    in scope. The context for each notification will be as returned by
+    :py:func:`~.helpers.notification_context`.
     """
     # Get the logged in user from the context
     user = context.get('user')
@@ -34,15 +37,7 @@ def notification_dropdown(context):
     else:
         notifications = []
     # Convert the notifications into a more friendly dict for rendering
-    notifications = [
-        {
-            'type' : n.notification_type.name,
-            'level' : n.notification_type.level.value,
-            'link' : reverse('jasmin_notifications:follow', kwargs = { 'uuid' : n.uuid }),
-            'target' : n.target,
-        }
-        for n in notifications
-    ]
+    notifications = [ notification_context(n) for n in notifications ]
     # Add in any extra notifications from the context
     notifications.extend(context.get('notifications_extra', []))
     return {

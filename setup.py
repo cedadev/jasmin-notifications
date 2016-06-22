@@ -25,6 +25,7 @@ requires = [
     'django',
     'jasmin-django-utils',
     'django-polymorphic',
+    'django-picklefield',
 ]
 
 if __name__ == "__main__":
