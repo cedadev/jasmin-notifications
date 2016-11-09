@@ -33,7 +33,8 @@ def notification_dropdown(context):
         # Get the unread notifications for display for the user
         notifications = UserNotification.objects.filter(notification_type__display = True,
                                                         user = user,
-                                                        followed_at__isnull = True)
+                                                        followed_at__isnull = True)  \
+                                                .order_by('-created_at')
     else:
         notifications = []
     # Convert the notifications into a more friendly dict for rendering

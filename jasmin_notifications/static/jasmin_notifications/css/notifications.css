@@ -33,6 +33,12 @@ li.notification > a {
     padding: 10px 15px;
 }
 
+span.notification-time {
+    color : #777;
+    font-size: 0.8em;
+    margin-left: 10px;
+}
+
 li.notification-info > a:hover {
     background: #e8e8e8;
 }

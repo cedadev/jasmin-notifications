@@ -1,3 +1,5 @@
+{% load humanize %}
+
 <li class="{% if notifications %}dropdown{% else %}disabled{% endif %}">
     <a href="#" {% if notifications %}class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"{% endif %}>
         <i class="fa fa-bell"></i> <span class="badge unread-count">{{ notifications|length }}</span>
@@ -9,6 +11,7 @@
                 <li class="notification notification-{{ notification.level }}">
                     <a href="{{ notification.follow_link }}">
                         {% include "jasmin_notifications/messages/"|add:notification.notification_type|add:".html" %}
+                        {% if notification.created_at %}<span class="notification-time">{{ notification.created_at|naturaltime }}</span>{% endif %}
                     </a>
                 </li>
             {% endfor %}
