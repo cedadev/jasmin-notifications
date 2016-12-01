@@ -19,19 +19,18 @@ class NotificationTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'level')
 
 
+@admin.register(EmailNotification)
 class EmailNotificationAdmin(PolymorphicChildModelAdmin):
     base_model = EmailNotification
 
+@admin.register(UserNotification)
 class UserNotificationAdmin(PolymorphicChildModelAdmin):
     base_model = UserNotification
 
 @admin.register(Notification)
 class NotificationAdmin(PolymorphicParentModelAdmin):
     base_model = Notification
-    child_models = (
-        (EmailNotification, EmailNotificationAdmin),
-        (UserNotification, UserNotificationAdmin),
-    )
+    child_models = (EmailNotification, UserNotification)
     polymorphic_list = True
 
     list_display = ('notification_type', 'level', 'email', 'uuid', 'followed_at', 'created_at')
