@@ -33,10 +33,18 @@ li.notification > a {
     padding: 10px 15px;
 }
 
-span.notification-time {
+.notification-layout {
+    display: table;
+}
+.notification-message, .notification-time {
+    display: table-cell;
+    width: 100%;
+}
+.notification-time {
     color : #777;
     font-size: 0.8em;
-    margin-left: 10px;
+    padding-left: 10px;
+    text-align: right;
 }
 
 li.notification-info > a:hover {

@@ -10,8 +10,10 @@
             {% for notification in notifications %}
                 <li class="notification notification-{{ notification.level }}">
                     <a href="{{ notification.follow_link }}">
-                        {% include "jasmin_notifications/messages/"|add:notification.notification_type|add:".html" %}
-                        {% if notification.created_at %}<span class="notification-time">{{ notification.created_at|naturaltime }}</span>{% endif %}
+                        <div class="notification-layout">
+                            <span class="notification-message">{% include "jasmin_notifications/messages/"|add:notification.notification_type|add:".html" %}</span>
+                            {% if notification.created_at %}<span class="notification-time">{{ notification.created_at|naturaltime }}</span>{% endif %}
+                        </div>
                     </a>
                 </li>
             {% endfor %}
