@@ -10,6 +10,9 @@ import enum, uuid
 from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
+from django.template.loader import get_template, TemplateDoesNotExist
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 
 from polymorphic.models import PolymorphicModel
 from polymorphic.manager import PolymorphicManager
@@ -45,6 +48,7 @@ class NotificationType(models.Model):
     #: A short name for the notification type
     name = models.CharField(
         max_length = 50,
+        validators = [RegexValidator(regex = '^[a-zA-Z0-9_-]+$')],
         help_text = 'A short name for the notification'
     )
     #: The level of the notification type
@@ -56,6 +60,26 @@ class NotificationType(models.Model):
         help_text = 'Indicates of notifications of this type should be displayed '
                     'on site as well as emailed (user notifications only)'
     )
+
+    def clean(self):
+        # Make sure that the required templates exist for the notification type
+        if self.name:
+            errors = []
+            required_templates = [
+                'jasmin_notifications/mail/{}/subject.txt'.format(self.name),
+                'jasmin_notifications/mail/{}/content.txt'.format(self.name),
+            ]
+            if self.display:
+                required_templates.append(
+                    'jasmin_notifications/messages/{}.txt'.format(self.name),
+                )
+            for template in required_templates:
+                try:
+                    get_template(template)
+                except TemplateDoesNotExist:
+                    errors.append('Template {} does not exist'.format(template))
+            if errors:
+                raise ValidationError({ 'name' : errors })
 
     def __str__(self):
         return self.name
