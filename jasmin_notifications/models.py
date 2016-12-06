@@ -23,8 +23,6 @@ from picklefield.fields import PickledObjectField
 from jasmin_django_utils.enumfield import EnumField
 from jasmin_django_utils.crossdb import CrossDbGenericForeignKey
 
-from .helpers import notify, notify_if_not_exists, notify_pending_deadline
-
 
 @enum.unique
 class NotificationLevel(enum.Enum):
@@ -170,6 +168,7 @@ class NotifiableUserMixin:
         Any additional ``kwargs`` are based as context variables for template rendering,
         both for emails and messages (if appropriate).
         """
+        from .helpers import notify
         notify(notification_type, target, link, user = self, **extra_context)
 
     def notify_if_not_exists(self, notification_type, target, link, **extra_context):
@@ -179,6 +178,7 @@ class NotifiableUserMixin:
 
         See :py:meth:`notify` for more details.
         """
+        from .helpers import notify_if_not_exists
         notify_if_not_exists(notification_type, target, link, user = self, **extra_context)
 
     def notify_pending_deadline(self, deadline, deltas,
@@ -191,5 +191,6 @@ class NotifiableUserMixin:
         It is assumed that ``deltas`` are given in descending order, i.e. the longest
         delta first.
         """
+        from .helpers import notify_pending_deadline
         notify_pending_deadline(deadline, deltas, notification_type,
                                 target, link, user = self, **extra_context)
