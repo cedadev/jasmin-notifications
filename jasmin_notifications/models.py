@@ -23,6 +23,8 @@ from picklefield.fields import PickledObjectField
 from jasmin_django_utils.enumfield import EnumField
 from jasmin_django_utils.crossdb import CrossDbGenericForeignKey
 
+from .helpers import notify, notify_if_not_exists, notify_pending_deadline
+
 
 @enum.unique
 class NotificationLevel(enum.Enum):
@@ -153,3 +155,41 @@ class UserNotification(Notification):
     """
     #: The user being notified
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
+
+
+class NotifiableUserMixin:
+    """
+    Mixin that provides notification methods for a user.
+    """
+    def notify(self, notification_type, target, link, **extra_context):
+        """
+        Creates a notification for this user with the given type, target and link.
+
+        ``notification_type`` can be given as a string.
+
+        Any additional ``kwargs`` are based as context variables for template rendering,
+        both for emails and messages (if appropriate).
+        """
+        notify(notification_type, target, link, user = self, **extra_context)
+
+    def notify_if_not_exists(self, notification_type, target, link, **extra_context):
+        """
+        Creates a notification for this user with the given type and target, only
+        if such a notification does not already exist.
+
+        See :py:meth:`notify` for more details.
+        """
+        notify_if_not_exists(notification_type, target, link, user = self, **extra_context)
+
+    def notify_pending_deadline(self, deadline, deltas,
+                                notification_type, target, link, **extra_context):
+        """
+        Ensures that a notification for this user of the given type and target
+        is sent exactly once for each of the given ``deltas`` before the given
+        ``deadline``.
+
+        It is assumed that ``deltas`` are given in descending order, i.e. the longest
+        delta first.
+        """
+        notify_pending_deadline(deadline, deltas, notification_type,
+                                target, link, user = self, **extra_context)
