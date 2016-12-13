@@ -26,6 +26,7 @@ def notification_context(notification):
       * ``user`` - the user the notification is for, or ``None`` if the notification
                    is to an email that is not associated with a user
       * ``target`` - the target object for the notification
+      * ``link`` - the *fully qualified* link underlying the notification
       * ``follow_link`` - the *fully qualified* link to follow the notification
       * ``created_at`` - the datetime at which the notification was created
       * ``followed_at`` - the datetime at which the notification was followed, or
@@ -41,12 +42,14 @@ def notification_context(notification):
         email = notification.email
         user = get_user_model().objects.filter(email = email).first()
     # Create the context
+    link_prefix = '' if notification.link.startswith('http') else settings.BASE_URL
     context = {
         'notification_type' : notification.notification_type.name,
         'level' : notification.notification_type.level.value,
         'email' : email,
         'user' : user,
         'target' : notification.target,
+        'link' : link_prefix + notification.link,
         'follow_link' : settings.BASE_URL + reverse(
             'jasmin_notifications:follow', kwargs = { 'uuid' : notification.uuid }
         ),
@@ -130,7 +133,9 @@ def notify_pending_deadline(deadline, deltas, notification_type, target,
                   .filter_target(target)  \
                   .order_by('-created_at')  \
                   .first()
-    for delta in deltas:
+    # Add the deadline and the number of notifications to the context
+    extra_context.update(deadline = deadline, n = len(deltas))
+    for i, delta in enumerate(deltas, start = 1):
         threshold = deadline - delta
         # Deltas should be given longest first, so if we are before the threshold
         # for this delta, we are done
@@ -139,5 +144,7 @@ def notify_pending_deadline(deadline, deltas, notification_type, target,
         # Now we know threshold < today <= deadline
         # So send a notification unless one has already been sent in the window
         if not latest or latest.created_at.date() < threshold:
+            # Add the number of this notification to the context
+            extra_context = dict(extra_context, i = i)
             notify(notification_type, target, link, user, email, **extra_context)
             return
