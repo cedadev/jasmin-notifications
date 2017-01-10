@@ -9,7 +9,7 @@ from django.views.decorators.http import require_safe
 from django import http
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 
 from .models import Notification, UserNotification
 
@@ -29,7 +29,10 @@ def follow(request, uuid):
     if not notification:
         raise http.Http404("Notification does not exist")
     if isinstance(notification, UserNotification):
-        # For user notifications, the user must match the logged in user
+        # For user notifications, we require an authenticated user
+        if not request.user.is_authenticated():
+            return redirect_to_login(request.path)
+        # The notification must be for the logged-in user
         if request.user != notification.user:
             raise http.Http404("Notification does not exist")
         # Update the followed_at time for all the notifications for the same user
