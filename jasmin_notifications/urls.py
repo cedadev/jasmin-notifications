@@ -11,5 +11,9 @@ from . import views
 
 app_name = 'jasmin_notifications'
 urlpatterns = [
-    url(r'^(?P<uuid>[a-zA-Z0-9-]+)/$', views.follow, name = 'follow'),
+    url(
+        r'^(?P<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
+        views.follow,
+        name = 'follow'
+    ),
 ]
