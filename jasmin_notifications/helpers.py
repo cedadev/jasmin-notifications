@@ -8,7 +8,7 @@ __copyright__ = "Copyright 2015 UK Science and Technology Facilities Council"
 from datetime import date
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from .models import NotificationType, UserNotification, EmailNotification

@@ -13,15 +13,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.template.loader import get_template, TemplateDoesNotExist
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 from polymorphic.models import PolymorphicModel
-from polymorphic.manager import PolymorphicManager
 from polymorphic.query import PolymorphicQuerySet
 
 from picklefield.fields import PickledObjectField
 
 from jasmin_django_utils.enumfield import EnumField
-from jasmin_django_utils.crossdb import CrossDbGenericForeignKey
 
 
 @enum.unique
@@ -131,7 +130,7 @@ class Notification(PolymorphicModel):
     #: Object ID for notification target
     target_id = models.CharField(max_length = 250)
     #: The target object for the notification
-    target = CrossDbGenericForeignKey('target_ctype', 'target_id')
+    target = GenericForeignKey('target_ctype', 'target_id')
     #: The onward link for the notification
     link = models.URLField()
     #: Datetime when the notification was created

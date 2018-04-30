@@ -30,7 +30,7 @@ def follow(request, uuid):
         raise http.Http404("Notification does not exist")
     if isinstance(notification, UserNotification):
         # For user notifications, we require an authenticated user
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return redirect_to_login(request.path)
         # The notification must be for the logged-in user
         if request.user != notification.user:

@@ -6,7 +6,7 @@ __author__ = "Matt Pryor"
 __copyright__ = "Copyright 2015 UK Science and Technology Facilities Council"
 
 from django import template
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from ..models import UserNotification
 from ..helpers import notification_context
@@ -29,7 +29,7 @@ def notification_dropdown(context):
     """
     # Get the logged in user from the context
     user = context.get('user')
-    if user and user.is_authenticated():
+    if user and user.is_authenticated:
         # Get the unread notifications for display for the user
         notifications = UserNotification.objects.filter(notification_type__display = True,
                                                         user = user,
