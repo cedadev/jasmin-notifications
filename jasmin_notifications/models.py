@@ -138,7 +138,7 @@ class Notification(PolymorphicModel):
     #: Datetime at which the notification was followed
     followed_at = models.DateTimeField(null = True, blank = True)
     #: Any extra context for template rendering
-    extra_context = PickledObjectField(default = {})
+    extra_context = PickledObjectField(default = dict)
 
 class EmailNotification(Notification):
     """
