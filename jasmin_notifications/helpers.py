@@ -60,7 +60,7 @@ def notification_context(notification):
     return context
 
 
-def notify(notification_type, target, link, user = None, email = None, **extra_context):
+def notify(notification_type, target, link, user = None, email = None, cc = None, **extra_context):
     """
     Creates a notification with the given ``notification_type``, ``target`` and ``link``.
 
@@ -85,6 +85,8 @@ def notify(notification_type, target, link, user = None, email = None, **extra_c
     notification.target = target
     notification.link = link
     notification.extra_context = extra_context
+    if cc:
+        notification.cc = cc
     notification.save()
 
 
