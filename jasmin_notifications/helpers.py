@@ -60,7 +60,7 @@ def notification_context(notification):
     return context
 
 
-def notify(notification_type, target, link, user = None, email = None, **extra_context):
+def notify(notification_type, target, link, user = None, email = None, cc = None, **extra_context):
     """
     Creates a notification with the given ``notification_type``, ``target`` and ``link``.
 
@@ -78,7 +78,7 @@ def notify(notification_type, target, link, user = None, email = None, **extra_c
     if user:
         notification = UserNotification(user = user)
     elif email:
-        notification = EmailNotification(email = email)
+        notification = EmailNotification(email = email, cc = cc)
     else:
         raise ValueError('One of user or email must be given')
     notification.notification_type = notification_type

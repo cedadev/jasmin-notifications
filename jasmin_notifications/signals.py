@@ -11,7 +11,7 @@ from django.conf import settings
 from django.db.models import signals
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
@@ -44,13 +44,14 @@ def send_notification(sender, instance, created, **kwargs):
         subject = render_to_string('{}/subject.txt'.format(template_dir), context)
         subject = (settings.EMAIL_SUBJECT_PREFIX + subject).strip()
         content = render_to_string('{}/content.txt'.format(template_dir), context)
-        success = send_mail(
+        message = EmailMessage(
             subject = subject,
-            message = content,
+            body = content,
             from_email = settings.DEFAULT_FROM_EMAIL,
-            recipient_list = [email],
-            fail_silently = True
+            to = [email],
+            cc = [instance.cc] if instance.cc else None,
         )
+        success = message.send(fail_silently = True)
         if not success:
             _log.error('Failed to send notification (uuid: {})'.format(instance.uuid))
 

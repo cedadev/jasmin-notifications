@@ -145,6 +145,8 @@ class EmailNotification(Notification):
     Model for notifications sent to an email address with no attached user.
     """
     email = models.EmailField()
+    #: CC email (support email for account application)
+    cc = models.EmailField(null = True, blank = True)
 
 class UserNotification(Notification):
     """
