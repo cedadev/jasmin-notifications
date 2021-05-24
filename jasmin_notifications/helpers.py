@@ -78,15 +78,13 @@ def notify(notification_type, target, link, user = None, email = None, cc = None
     if user:
         notification = UserNotification(user = user)
     elif email:
-        notification = EmailNotification(email = email)
+        notification = EmailNotification(email = email, cc = cc)
     else:
         raise ValueError('One of user or email must be given')
     notification.notification_type = notification_type
     notification.target = target
     notification.link = link
     notification.extra_context = extra_context
-    if cc:
-        notification.cc = cc
     notification.save()
 
 

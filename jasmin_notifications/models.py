@@ -137,8 +137,6 @@ class Notification(PolymorphicModel):
     created_at = models.DateTimeField(auto_now_add = True)
     #: Datetime at which the notification was followed
     followed_at = models.DateTimeField(null = True, blank = True)
-    #: CC email (support email for account application)
-    cc = models.EmailField(null = True, blank = True)
     #: Any extra context for template rendering
     extra_context = PickledObjectField(default = dict)
 
@@ -147,6 +145,8 @@ class EmailNotification(Notification):
     Model for notifications sent to an email address with no attached user.
     """
     email = models.EmailField()
+    #: CC email (support email for account application)
+    cc = models.EmailField(null = True, blank = True)
 
 class UserNotification(Notification):
     """
