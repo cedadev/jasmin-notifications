@@ -49,7 +49,7 @@ def send_notification(sender, instance, created, **kwargs):
             body = content,
             from_email = settings.DEFAULT_FROM_EMAIL,
             to = [email],
-            cc = [instance.cc] if instance.cc else None,
+            cc = [instance.cc] if isinstance(instance, EmailNotification) and instance.cc else [],
         )
         success = message.send(fail_silently = True)
         if not success:
