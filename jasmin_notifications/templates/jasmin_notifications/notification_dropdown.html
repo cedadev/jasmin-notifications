@@ -1,19 +1,17 @@
 {% load humanize %}
 
-<li class="{% if notifications %}dropdown{% else %}disabled{% endif %}">
-    <a href="#" {% if notifications %}class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"{% endif %}>
-        <i class="fa fa-bell"></i> <span class="badge unread-count">{{ notifications|length }}</span>
+<li class="nav-item {% if notifications %}dropdown{% else %}disabled{% endif %}">
+    <a href="#" class="nav-link dropdown-toggle"{% if notifications %} data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"{% endif %}>
+        <i class="fa fa-bell"></i> <span class="{%if notifications %}badge bg-danger{% endif %}">{{ notifications|length }}</span>
     </a>
     {% if notifications %}
-        <ul class="disabled dropdown-menu notification-list">
-            <li class="notification-header"><i class="fa fa-bell"></i> Notifications</li>
+        <ul class="dropdown-menu dropdown-menu-end" style="max-width: 100vw;">
+            <li><h6 class="dropdown-header"><i class="fa fa-bell"></i> Notifications</h6></li>
             {% for notification in notifications %}
                 <li class="notification notification-{{ notification.level }}">
-                    <a href="{{ notification.follow_link }}">
-                        <div class="notification-layout">
-                            <span class="notification-message">{% include "jasmin_notifications/messages/"|add:notification.notification_type|add:".html" %}</span>
-                            {% if notification.created_at %}<span class="notification-time">{{ notification.created_at|naturaltime }}</span>{% endif %}
-                        </div>
+                    <a class="dropdown-item" href="{{ notification.follow_link }}">
+                        {% include "jasmin_notifications/messages/"|add:notification.notification_type|add:".html" %}
+                        {% if notification.created_at %}{{ notification.created_at|naturaltime }}{% endif %}
                     </a>
                 </li>
             {% endfor %}
