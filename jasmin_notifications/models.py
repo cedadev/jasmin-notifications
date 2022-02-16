@@ -44,6 +44,8 @@ class NotificationType(models.Model):
     """
     Represents a notification type that an app may emit.
     """
+    id = models.AutoField(primary_key=True)
+
     #: A short name for the notification type
     name = models.CharField(
         max_length = 50,
@@ -116,6 +118,8 @@ class Notification(PolymorphicModel):
     """
     Represents a notification.
     """
+    id = models.AutoField(primary_key=True)
+
     class Meta:
         get_latest_by = 'created_at'
 

@@ -51,4 +51,7 @@ if __name__ == "__main__":
         install_requires = requires,
         tests_require = requires,
         test_suite = "jasmin_notifications.test",
+        package_data = {
+            'jasmin_notifications': ['templates/*']
+            }
     )
