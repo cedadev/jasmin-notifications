@@ -15,6 +15,12 @@
                     </a>
                 </li>
             {% endfor %}
+            <li>
+                <form method="post" action="{% url 'jasmin_notifications:clear_all' %}" >
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item">Clear All Notifications</button>
+                </form>
+            </li>
         </ul>
     {% endif %}
 </li>
