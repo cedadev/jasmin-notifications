@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "jasmin-notifications"
+version = "1.1.0"
+description = "Django app providing flexible notifications, both as email and for rendering on site."
+authors = ["Matt Pryor <matt.pryor@stfc.ac.uk>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "jasmin_notifications"}]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+Django = "*"
+jasmin-django-utils = {git = "https://github.com/cedadev/jasmin-django-utils.git", branch="master"}
+django-polymorphic = "*"
+django-picklefield = "*"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
