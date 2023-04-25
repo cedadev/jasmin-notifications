@@ -14,9 +14,7 @@ from ..models import UserNotification
 register = template.Library()
 
 
-@register.inclusion_tag(
-    "jasmin_notifications/notification_dropdown.html", takes_context=True
-)
+@register.inclusion_tag("jasmin_notifications/notification_dropdown.html", takes_context=True)
 def notification_dropdown(context):
     """
     Renders the notifications for the logged in user as a Bootstrap dropdown for

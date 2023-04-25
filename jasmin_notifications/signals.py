@@ -8,16 +8,15 @@ __copyright__ = "Copyright 2015 UK Science and Technology Facilities Council"
 import logging
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.mail import EmailMessage, send_mail
 from django.db.models import signals
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from django.core.mail import send_mail, EmailMessage
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 
-from .models import Notification, EmailNotification, UserNotification
 from .helpers import notification_context
-
+from .models import EmailNotification, Notification, UserNotification
 
 _log = logging.getLogger(__name__)
 
@@ -40,20 +39,20 @@ def send_notification(sender, instance, created, **kwargs):
         else:
             email = instance.email
         context = notification_context(instance)
-        template_dir = 'jasmin_notifications/mail/{}'.format(instance.notification_type.name)
-        subject = render_to_string('{}/subject.txt'.format(template_dir), context)
+        template_dir = "jasmin_notifications/mail/{}".format(instance.notification_type.name)
+        subject = render_to_string("{}/subject.txt".format(template_dir), context)
         subject = (settings.EMAIL_SUBJECT_PREFIX + subject).strip()
-        content = render_to_string('{}/content.txt'.format(template_dir), context)
+        content = render_to_string("{}/content.txt".format(template_dir), context)
         message = EmailMessage(
-            subject = subject,
-            body = content,
-            from_email = settings.DEFAULT_FROM_EMAIL,
-            to = [email],
-            cc = [instance.cc] if isinstance(instance, EmailNotification) and instance.cc else [],
+            subject=subject,
+            body=content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[email],
+            cc=[instance.cc] if isinstance(instance, EmailNotification) and instance.cc else [],
         )
-        success = message.send(fail_silently = True)
+        success = message.send(fail_silently=True)
         if not success:
-            _log.error('Failed to send notification (uuid: {})'.format(instance.uuid))
+            _log.error("Failed to send notification (uuid: {})".format(instance.uuid))
 
 
 @receiver(signals.post_delete)

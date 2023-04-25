@@ -14,6 +14,13 @@ jasmin-django-utils = {git = "https://github.com/cedadev/jasmin-django-utils.git
 django-polymorphic = "*"
 django-picklefield = "*"
 
+[tool.black]
+line-length = 100
+target-version = ['py36','py37', 'py38', 'py39', 'py310', 'py311']
+
+[tool.isort]
+profile = "black"
+
 
 [build-system]
 requires = ["poetry-core"]
