@@ -2,16 +2,18 @@ import datetime
 
 import django.core.management.base
 
-from . import models
+from ... import models
 
 
 class Command(django.core.management.base.BaseCommand):
-    help = "Cleanup old notifications."
+    """Management command to cleanup JASMIN notifications."""
+
+    help = "Cleanup old JASMIN notifications."
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.clean_followed = datetime.datetime.now() - datetime.timedelta(days=365)
-        self.clean_unfollowed = datetime.datetime.now() - datetime.timedelta(days=1826)
+        self.clean_followed = datetime.datetime.now() - datetime.timedelta(days=365)  # 1 year.
+        self.clean_unfollowed = datetime.datetime.now() - datetime.timedelta(days=1826)  # 5 years.
 
     def handle(self, *args, **options):
         """Delete old notifications."""
