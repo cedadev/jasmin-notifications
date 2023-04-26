@@ -12,8 +12,9 @@ class AppConfig(BaseAppConfig):
     """
     Application configuration object for the JASMIN notifications app.
     """
-    name = '.'.join(__name__.split('.')[:-1])
-    verbose_name = 'JASMIN Notifications'
+
+    name = ".".join(__name__.split(".")[:-1])
+    verbose_name = "JASMIN Notifications"
 
     def ready(self):
         # Connect DB signals

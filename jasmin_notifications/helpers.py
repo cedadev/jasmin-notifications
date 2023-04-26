@@ -8,10 +8,10 @@ __copyright__ = "Copyright 2015 UK Science and Technology Facilities Council"
 from datetime import date
 
 from django.conf import settings
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
-from .models import NotificationType, UserNotification, EmailNotification
+from .models import EmailNotification, NotificationType, UserNotification
 
 
 def notification_context(notification):
@@ -37,30 +37,29 @@ def notification_context(notification):
         user = notification.user
         email = user.email
     else:
-        # For email notifications, try to find a user with the email address to go
+        # For email notifications, try to find a user with the email address to go
         # into the context
         email = notification.email
-        user = get_user_model().objects.filter(email = email).first()
-    # Create the context
-    link_prefix = '' if notification.link.startswith('http') else settings.BASE_URL
+        user = get_user_model().objects.filter(email=email).first()
+    # Create the context
+    link_prefix = "" if notification.link.startswith("http") else settings.BASE_URL
     context = {
-        'notification_type' : notification.notification_type.name,
-        'level' : notification.notification_type.level.value,
-        'email' : email,
-        'user' : user,
-        'target' : notification.target,
-        'link' : link_prefix + notification.link,
-        'follow_link' : settings.BASE_URL + reverse(
-            'jasmin_notifications:follow', kwargs = { 'uuid' : notification.uuid }
-        ),
-        'created_at' : notification.created_at,
-        'followed_at' : notification.followed_at,
+        "notification_type": notification.notification_type.name,
+        "level": notification.notification_type.level.value,
+        "email": email,
+        "user": user,
+        "target": notification.target,
+        "link": link_prefix + notification.link,
+        "follow_link": settings.BASE_URL
+        + reverse("jasmin_notifications:follow", kwargs={"uuid": notification.uuid}),
+        "created_at": notification.created_at,
+        "followed_at": notification.followed_at,
     }
     context.update(notification.extra_context)
     return context
 
 
-def notify(notification_type, target, link, user = None, email = None, cc = None, **extra_context):
+def notify(notification_type, target, link, user=None, email=None, cc=None, **extra_context):
     """
     Creates a notification with the given ``notification_type``, ``target`` and ``link``.
 
@@ -74,13 +73,13 @@ def notify(notification_type, target, link, user = None, email = None, cc = None
     both for emails and messages (if appropriate).
     """
     if not isinstance(notification_type, NotificationType):
-        notification_type = NotificationType.objects.get(name = notification_type)
+        notification_type = NotificationType.objects.get(name=notification_type)
     if user:
-        notification = UserNotification(user = user)
+        notification = UserNotification(user=user)
     elif email:
-        notification = EmailNotification(email = email, cc = cc)
+        notification = EmailNotification(email=email, cc=cc)
     else:
-        raise ValueError('One of user or email must be given')
+        raise ValueError("One of user or email must be given")
     notification.notification_type = notification_type
     notification.target = target
     notification.link = link
@@ -88,7 +87,7 @@ def notify(notification_type, target, link, user = None, email = None, cc = None
     notification.save()
 
 
-def notify_if_not_exists(notification_type, target, link, user = None, email = None, **extra_context):
+def notify_if_not_exists(notification_type, target, link, user=None, email=None, **extra_context):
     """
     Creates a notification with the given ``notification_type``, ``target`` and
     ``email``\ /``user`` only if such a notification does not already exist.
@@ -96,17 +95,18 @@ def notify_if_not_exists(notification_type, target, link, user = None, email = N
     See :py:func:`notify` for more details.
     """
     if user:
-        query = UserNotification.objects.filter(user = user)
+        query = UserNotification.objects.filter(user=user)
     elif email:
-        query = EmailNotification.objects.filter(email = email)
+        query = EmailNotification.objects.filter(email=email)
     else:
-        raise ValueError('One of user or email must be given')
+        raise ValueError("One of user or email must be given")
     if not query.filter_type(notification_type).filter_target(target).exists():
         notify(notification_type, target, link, user, email, **extra_context)
 
 
-def notify_pending_deadline(deadline, deltas, notification_type, target,
-                            link, user = None, email = None, **extra_context):
+def notify_pending_deadline(
+    deadline, deltas, notification_type, target, link, user=None, email=None, **extra_context
+):
     """
     Ensures that a notification of the given type, target and email/user is sent
     exactly once for each of the given ``deltas`` before the given ``deadline``.
@@ -117,34 +117,33 @@ def notify_pending_deadline(deadline, deltas, notification_type, target,
     If ``user`` is present in ``kwargs``, :py:class:`~.models.UserNotification`\ s
     are created, otherwise :py:class:``~.models.EmailNotification``\ s are created.
     """
-    # If the deadline has already passed, there is nothing to do
+    # If the deadline has already passed, there is nothing to do
     today = date.today()
     if deadline < today:
         return
-    # Work out whether we are using email or user notifications
+    # Work out whether we are using email or user notifications
     if user:
-        query = UserNotification.objects.filter(user = user)
+        query = UserNotification.objects.filter(user=user)
     elif email:
-        query = EmailNotification.objects.filter(email = email)
+        query = EmailNotification.objects.filter(email=email)
     else:
-        raise ValueError('One of user or email must be given')
+        raise ValueError("One of user or email must be given")
     # Find the most recent notification for the type/target/recipient combo
-    latest = query.filter_type(notification_type)  \
-                  .filter_target(target)  \
-                  .order_by('-created_at')  \
-                  .first()
-    # Add the deadline and the number of notifications to the context
-    extra_context.update(deadline = deadline, n = len(deltas))
-    for i, delta in enumerate(deltas, start = 1):
+    latest = (
+        query.filter_type(notification_type).filter_target(target).order_by("-created_at").first()
+    )
+    # Add the deadline and the number of notifications to the context
+    extra_context.update(deadline=deadline, n=len(deltas))
+    for i, delta in enumerate(deltas, start=1):
         threshold = deadline - delta
-        # Deltas should be given longest first, so if we are before the threshold
+        # Deltas should be given longest first, so if we are before the threshold
         # for this delta, we are done
         if today <= threshold:
             return
-        # Now we know threshold < today <= deadline
-        # So send a notification unless one has already been sent in the window
+        # Now we know threshold < today <= deadline
+        # So send a notification unless one has already been sent in the window
         if not latest or latest.created_at.date() < threshold:
-            # Add the number of this notification to the context
-            extra_context = dict(extra_context, i = i)
+            # Add the number of this notification to the context
+            extra_context = dict(extra_context, i=i)
             notify(notification_type, target, link, user, email, **extra_context)
             return
