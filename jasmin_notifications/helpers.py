@@ -90,7 +90,7 @@ def notify(notification_type, target, link, user=None, email=None, cc=None, **ex
 def notify_if_not_exists(notification_type, target, link, user=None, email=None, **extra_context):
     """
     Creates a notification with the given ``notification_type``, ``target`` and
-    ``email``\ /``user`` only if such a notification does not already exist.
+    ``email`` /``user`` only if such a notification does not already exist.
 
     See :py:func:`notify` for more details.
     """
@@ -114,8 +114,8 @@ def notify_pending_deadline(
     It is assumed that ``deltas`` are given in descending order, i.e. the longest
     delta first.
 
-    If ``user`` is present in ``kwargs``, :py:class:`~.models.UserNotification`\ s
-    are created, otherwise :py:class:``~.models.EmailNotification``\ s are created.
+    If ``user`` is present in ``kwargs``, :py:class:`~.models.UserNotification` s
+    are created, otherwise :py:class:``~.models.EmailNotification``s are created.
     """
     # If the deadline has already passed, there is nothing to do
     today = date.today()
