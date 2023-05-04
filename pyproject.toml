@@ -10,7 +10,7 @@ packages = [{include = "jasmin_notifications"}]
 [tool.poetry.dependencies]
 python = "^3.6"
 Django = "*"
-jasmin-django-utils = {git = "https://github.com/cedadev/jasmin-django-utils.git", tag="v1.0.6"}
+jasmin-django-utils = {git = "https://github.com/cedadev/jasmin-django-utils.git", tag="v1.0.7"}
 django-polymorphic = "*"
 django-picklefield = "*"
 
