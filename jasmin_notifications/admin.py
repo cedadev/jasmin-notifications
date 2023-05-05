@@ -1,6 +1,4 @@
-"""
-Registration of models for the JASMIN account app with the admin interface.
-"""
+"""Registration of models for the JASMIN account app with the admin interface."""
 
 __author__ = "Matt Pryor"
 __copyright__ = "Copyright 2015 UK Science and Technology Facilities Council"
@@ -58,6 +56,6 @@ class NotificationAdmin(PolymorphicParentModelAdmin):
     email.short_description = "Email"
 
     def level(self, obj):
-        return obj.notification_type.level.name
+        return obj.notification_type.level
 
     level.short_description = "Notification level"

@@ -45,7 +45,7 @@ def notification_context(notification):
     link_prefix = "" if notification.link.startswith("http") else settings.BASE_URL
     context = {
         "notification_type": notification.notification_type.name,
-        "level": notification.notification_type.level.value,
+        "level": notification.notification_type.level,
         "email": email,
         "user": user,
         "target": notification.target,

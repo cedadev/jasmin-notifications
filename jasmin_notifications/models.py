@@ -1,11 +1,8 @@
-"""
-Django ORM models for the JASMIN notifications app.
-"""
+"""Django ORM models for the JASMIN notifications app."""
 
 __author__ = "Matt Pryor"
 __copyright__ = "Copyright 2015 UK Science and Technology Facilities Council"
 
-import enum
 import uuid
 
 from django.conf import settings
@@ -15,17 +12,13 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.template.loader import TemplateDoesNotExist, get_template
-from jasmin_django_utils.enumfield import EnumField
 from picklefield.fields import PickledObjectField
 from polymorphic.models import PolymorphicModel
 from polymorphic.query import PolymorphicQuerySet
 
 
-@enum.unique
-class NotificationLevel(enum.Enum):
-    """
-    Enum representing the levels that a notification can have.
-    """
+class NotificationLevel(models.TextChoices):
+    """Enum representing the levels that a notification can have."""
 
     #: A purely informational notification
     INFO = "info"
@@ -53,7 +46,7 @@ class NotificationType(models.Model):
         help_text="A short name for the notification",
     )
     #: The level of the notification type
-    level = EnumField(NotificationLevel)
+    level = models.CharField(choices=NotificationLevel.choices, max_length=9)
     #: Indicates if notifications of this type should be displayed on the site
     #: Used for user notifications only
     display = models.BooleanField(
@@ -83,7 +76,7 @@ class NotificationType(models.Model):
                 raise ValidationError({"name": errors})
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     @classmethod
     def create(cls, name, **defaults):
