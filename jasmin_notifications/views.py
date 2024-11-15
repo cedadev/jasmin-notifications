@@ -8,6 +8,7 @@ __copyright__ = "Copyright 2015 UK Science and Technology Facilities Council"
 import django.shortcuts
 import django.views.decorators.http
 from django import http
+from django.contrib.auth.decorators import login_not_required
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -15,6 +16,7 @@ from django.utils import timezone
 from .models import Notification, UserNotification
 
 
+@login_not_required
 @django.views.decorators.http.require_safe
 def follow(request, uuid):
     """
