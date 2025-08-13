@@ -8,14 +8,14 @@ readme = "README.md"
 packages = [{include = "jasmin_notifications"}]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-Django = ">=2.2"
+python = "^3.11"
+Django = ">=4.2"
 django-polymorphic = "*"
 django-picklefield = "*"
 
 [tool.black]
 line-length = 100
-target-version = ['py36','py37', 'py38', 'py39', 'py310', 'py311']
+target-version = ['py311', 'py312', 'py313']
 
 [tool.isort]
 profile = "black"
